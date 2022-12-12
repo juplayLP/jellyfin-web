@@ -85,7 +85,8 @@ import { setBackdropTransparency, TRANSPARENCY_LEVEL } from '../../../components
             currentItem = item;
             const displayItem = itemInfo.displayItem || item;
             updateRecordingButton(displayItem);
-            let parentName = displayItem.SeriesName || displayItem.Album;
+            const test = itemHelper.getDisplayName(displayItem, {includeParentinfo:true});
+            let parentName = displayItem.SeriesName + ' | ' + test || displayItem.Album;
 
             if (displayItem.EpisodeTitle || displayItem.IsSeries) {
                 parentName = displayItem.Name;
