@@ -1355,7 +1355,7 @@
     "WeeklyAt": "{0}s tại {1}",
     "DailyAt": "Hàng ngày lúc {0}",
     "LastSeen": "Nhìn thấy lần cuối {0}",
-    "PersonRole": "với tư cách là {0}",
+    "PersonRole": "vai diễn {0}",
     "ListPaging": "{0}-{1} của {2}",
     "WriteAccessRequired": "Jellyfin yêu cầu quyền ghi vào thư mục này. Hãy đảm bảo quyền ghi và thử lại.",
     "PathNotFound": "Không thể tìm thấy đường dẫn. Vui lòng đảm bảo đường dẫn hợp lệ và thử lại.",
@@ -1650,8 +1650,8 @@
     "MediaInfoDvVersionMinor": "Phiên bản DV nhỏ",
     "MediaInfoDvVersionMajor": "Phiên bản DV chính",
     "MediaInfoDoViTitle": "Tiêu đề DV",
-    "MediaInfoVideoRangeType": "Loại phạm vi video",
-    "LabelVideoRangeType": "Loại phạm vi video:",
+    "MediaInfoVideoRangeType": "Loại dải động video",
+    "LabelVideoRangeType": "Loại dải động video:",
     "LabelVppTonemappingContrastHelp": "Áp dụng độ tăng tương phản trong ánh xạ tông màu VPP. Giá trị đề xuất và mặc định là 1,2 và 1.",
     "LabelVppTonemappingContrast": "Độ tương phản ánh xạ tông màu VPP:",
     "LabelVppTonemappingBrightnessHelp": "Áp dụng tăng độ sáng trong ánh xạ tông màu VPP. Giá trị đề xuất và giá trị mặc định đều là 0.",
@@ -1676,5 +1676,9 @@
     "MessageNoItemsAvailable": "Không có mục nào hiện có sẵn.",
     "MessageNoFavoritesAvailable": "Không có mục yêu thích hiện có sẵn.",
     "MessageRenameMediaFolder": "Đổi tên thư viện phương tiện sẽ làm mất mọi dữ liệu mô tả, hãy tiến hành thận trọng.",
-    "Unreleased": "Chưa phát hành"
+    "Unreleased": "Chưa phát hành",
+    "Experimental": "Trải nghiệm",
+    "DownloadAll": "Tải Xuống Tất Cả",
+    "LabelStereoDownmixAlgorithm": "Thuật Toán Trộn Âm Thanh Nổi",
+    "StereoDownmixAlgorithmHelp": "Thuật toán được sử dụng để trộn âm thanh đa kênh thành âm thanh nổi."
 }

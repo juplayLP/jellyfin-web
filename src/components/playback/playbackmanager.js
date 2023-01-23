@@ -11,6 +11,7 @@ import { appHost } from '../apphost';
 import Screenfull from 'screenfull';
 import ServerConnections from '../ServerConnections';
 import alert from '../alert';
+import { includesAny } from '../../utils/container.ts';
 
 const UNLIMITED_ITEMS = -1;
 
@@ -1287,6 +1288,7 @@ class PlaybackManager {
                 return false;
             }
 
+            const container = mediaSource.Container.toLowerCase();
             const codec = (mediaStream.Codec || '').toLowerCase();
 
             if (!codec) {
@@ -1295,22 +1297,11 @@ class PlaybackManager {
 
             const profiles = deviceProfile.DirectPlayProfiles || [];
 
-            return profiles.filter(function (p) {
-                if (p.Type === 'Video') {
-                    if (!p.AudioCodec) {
-                        return true;
-                    }
-
-                    // This is an exclusion filter
-                    if (p.AudioCodec.indexOf('-') === 0) {
-                        return p.AudioCodec.toLowerCase().indexOf(codec) === -1;
-                    }
-
-                    return p.AudioCodec.toLowerCase().indexOf(codec) !== -1;
-                }
-
-                return false;
-            }).length > 0;
+            return profiles.some(function (p) {
+                return p.Type === 'Video'
+                    && includesAny((p.Container || '').toLowerCase(), container)
+                    && includesAny((p.AudioCodec || '').toLowerCase(), codec);
+            });
         }
 
         self.setAudioStreamIndex = function (index, player) {
@@ -1887,9 +1878,12 @@ class PlaybackManager {
             }
 
             if (options.items) {
-                return translateItemsForPlayback(options.items, options).then(function (items) {
-                    return playWithIntros(items, options);
-                });
+                return translateItemsForPlayback(options.items, options)
+                    .then((items) => getAdditionalParts(items))
+                    .then(function (allItems) {
+                        const flattened = allItems.flatMap(i => i);
+                        return playWithIntros(flattened, options);
+                    });
             } else {
                 if (!options.serverId) {
                     throw new Error('serverId required!');
@@ -1898,9 +1892,12 @@ class PlaybackManager {
                 return getItemsForPlayback(options.serverId, {
                     Ids: options.ids.join(',')
                 }).then(function (result) {
-                    return translateItemsForPlayback(result.Items, options).then(function (items) {
-                        return playWithIntros(items, options);
-                    });
+                    return translateItemsForPlayback(result.Items, options)
+                        .then((items) => getAdditionalParts(items))
+                        .then(function (allItems) {
+                            const flattened = allItems.flatMap(i => i);
+                            return playWithIntros(flattened, options);
+                        });
                 });
             }
         };
@@ -2038,6 +2035,23 @@ class PlaybackManager {
 
             return player.play(options);
         }
+
+        const getAdditionalParts = async (items) => {
+            const getOneAdditionalPart = async function (item) {
+                let retVal = [item];
+                if (item.Type === 'Movie') {
+                    const client = ServerConnections.getApiClient(item.ServerId);
+                    const user = await client.getCurrentUser();
+                    const additionalParts = await client.getAdditionalVideoParts(user.Id, item.Id);
+                    if (additionalParts.Items.length) {
+                        retVal = [item, ...additionalParts.Items];
+                    }
+                }
+                return retVal;
+            };
+
+            return Promise.all(items.flatMap(async (item) => getOneAdditionalPart(item)));
+        };
 
         function playWithIntros(items, options) {
             let playStartIndex = options.startIndex || 0;
